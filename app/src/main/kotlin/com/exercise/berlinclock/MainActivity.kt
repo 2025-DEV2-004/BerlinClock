@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.exercise.berlinclock.model.BerlinClock
 import com.exercise.berlinclock.ui.screens.BerlinClockScreen
 import com.exercise.berlinclock.ui.theme.BerlinClockTheme
 
@@ -13,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BerlinClockTheme {
-                BerlinClockScreen()
+                BerlinClockScreen(BerlinClock())
             }
         }
     }

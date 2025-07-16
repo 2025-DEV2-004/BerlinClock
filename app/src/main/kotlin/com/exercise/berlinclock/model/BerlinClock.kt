@@ -1,6 +1,9 @@
 package com.exercise.berlinclock.model
 
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 
 internal class BerlinClock {
 
@@ -48,4 +51,13 @@ internal class BerlinClock {
             singleMinuteRow = getSingleMinuteRow(time)
         )
     }
+
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    internal fun toString(time: LocalTime): String {
+        val dateFormat = LocalTime.Format {
+            byUnicodePattern("HH:mm:ss")
+        }
+        return time.format(dateFormat)
+    }
+
 }

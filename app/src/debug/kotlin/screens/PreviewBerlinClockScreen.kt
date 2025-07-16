@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.exercise.berlinclock.model.BerlinClock
 import com.exercise.berlinclock.model.FiveMinuteRowState
 import com.exercise.berlinclock.model.FourRowState
 import com.exercise.berlinclock.model.LampState
@@ -21,7 +22,9 @@ import com.exercise.berlinclock.ui.theme.BerlinClockTheme
 private fun PreviewBerlinClockScreen() {
     // This is where the Berlin Clock UI will be implemented
     // For now, we can leave it empty or add a placeholder
-    BerlinClockScreen()
+    BerlinClockTheme {
+        BerlinClockScreen(BerlinClock())
+    }
 }
 
 @Preview
