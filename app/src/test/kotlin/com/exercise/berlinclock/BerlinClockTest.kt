@@ -1,10 +1,10 @@
 package com.exercise.berlinclock
 
 import com.exercise.berlinclock.model.BerlinClock
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Test
 
 
 class BerlinClockTest {
@@ -19,12 +19,12 @@ class BerlinClockTest {
     @Test
     fun `secondsLamp should be Y for even seconds`() {
         val time = "00:00:00" // Even second
-        assertEquals("Y", berlinClock.getSecondsLamp(time))
+        assertTrue(berlinClock.getSecondsLamp(time))
     }
 
     @Test
     fun `secondsLamp should be O for odd seconds`() {
         val time = "00:00:01" // Odd second
-        assertEquals("O", berlinClock.getSecondsLamp(time))
+        assertFalse(berlinClock.getSecondsLamp(time))
     }
 }
