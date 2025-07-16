@@ -31,9 +31,19 @@ internal class BerlinClock {
         return List(4) { index -> index < singleHours }
     }
 
-    fun getFiveHourRow(time: String): List<Boolean> {
+    internal fun getFiveHourRow(time: String): List<Boolean> {
         val hours = time.split(":")[0].toInt()
         val fiveHourBlocks = hours / 5
         return List(4) { index -> index < fiveHourBlocks }
+    }
+
+    internal fun getBerlinClockState(time: String): BerlinClockState {
+        return BerlinClockState(
+            secondsLamp = getSecondsLamp(time),
+            fiveHourRow = getFiveHourRow(time),
+            singleHourRow = getSingleHourRow(time),
+            fiveMinuteRow = getFiveMinuteRow(time),
+            singleMinuteRow = getSingleMinuteRow(time)
+        )
     }
 }

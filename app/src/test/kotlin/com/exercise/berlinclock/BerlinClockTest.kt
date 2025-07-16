@@ -1,6 +1,7 @@
 package com.exercise.berlinclock
 
 import com.exercise.berlinclock.model.BerlinClock
+import com.exercise.berlinclock.model.BerlinClockState
 import com.exercise.berlinclock.model.LampState
 import org.junit.Assert
 import org.junit.Assert.assertFalse
@@ -249,5 +250,63 @@ class BerlinClockTest {
         val time = "23:59:59"
         val expected = listOf(true, true, true, true)
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
+    }
+
+    @Test
+    fun `getBerlinClockState should return correct state for a specific time`() {
+        val time = "16:37:16" // Example time
+        // Expected values based on our previous logic:
+        // Seconds: 16 is even -> true
+        // Five Hours: 16 / 5 = 3 -> [true, true, true, false]
+        // Single Hours: 16 % 5 = 1 -> [true, false, false, false]
+        // Five Minutes: 37 / 5 = 7 -> Y Y R Y Y R Y O O O O
+        //      -> [YELLOW, YELLOW, RED, YELLOW, YELLOW, RED, YELLOW, OFF, OFF, OFF, OFF]
+        // Single Minutes: 37 % 5 = 2 -> [true, true, false, false]
+
+        val expectedState = BerlinClockState(
+            secondsLamp = true,
+            fiveHourRow = listOf(true, true, true, false),
+            singleHourRow = listOf(true, false, false, false),
+            fiveMinuteRow = listOf(
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                LampState.YELLOW, LampState.OFF, LampState.OFF,
+                LampState.OFF, LampState.OFF
+            ),
+            singleMinuteRow = listOf(true, true, false, false)
+        )
+
+        Assert.assertEquals(expectedState, berlinClock.getBerlinClockState(time))
+    }
+
+    @Test
+    fun `getBerlinClockState should return correct state for midnight 00_00_00`() {
+        val time = "00:00:00"
+        val expectedState = BerlinClockState(
+            secondsLamp = true, // Even second
+            fiveHourRow = List(4) { false },
+            singleHourRow = List(4) { false },
+            fiveMinuteRow = List(11) { LampState.OFF },
+            singleMinuteRow = List(4) { false }
+        )
+        Assert.assertEquals(expectedState, berlinClock.getBerlinClockState(time))
+    }
+
+    @Test
+    fun `getBerlinClockState should return correct state for just before midnight 23_59_59`() {
+        val time = "23:59:59"
+        val expectedState = BerlinClockState(
+            secondsLamp = false, // Odd second
+            fiveHourRow = listOf(true, true, true, true), // 23/5 = 4
+            singleHourRow = listOf(true, true, true, false), // 23%5 = 3
+            fiveMinuteRow = listOf( // 59/5 = 11
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                LampState.YELLOW, LampState.YELLOW
+            ),
+            singleMinuteRow = listOf(true, true, true, true) // 59%5 = 4
+        )
+        Assert.assertEquals(expectedState, berlinClock.getBerlinClockState(time))
     }
 }
