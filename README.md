@@ -8,7 +8,7 @@ In order to run the Android application, you need to have Android Studio install
 
 ## Preview :
 
-![](../BerlinClock/Screenshot_20250716_152113.png)
+[![](../BerlinClock/Screenshot_20250716_152113.png)](https://github.com/2025-DEV2-004/BerlinClock/blob/main/Screenshot_20250716_152113.png)
 
 ### Tests :
 
