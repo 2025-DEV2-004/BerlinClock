@@ -1,20 +1,22 @@
 package com.exercise.berlinclock.model
 
+import kotlinx.datetime.LocalTime
+
 internal class BerlinClock {
 
-    internal fun getSecondsLamp(time: String): Boolean {
-        val seconds = time.split(":")[2].toInt()
+    internal fun getSecondsLamp(time: LocalTime): Boolean {
+        val seconds = time.second
         return seconds % 2 == 0
     }
 
-    internal fun getSingleMinuteRow(time: String): List<Boolean> {
-        val minutes = time.split(":")[1].toInt()
+    internal fun getSingleMinuteRow(time: LocalTime): List<Boolean> {
+        val minutes = time.minute
         val singleMinutes = minutes % 5
         return List(4) { it < singleMinutes }
     }
 
-    internal fun getFiveMinuteRow(time: String): List<LampState> {
-        val minutes = time.split(":")[1].toInt()
+    internal fun getFiveMinuteRow(time: LocalTime): List<LampState> {
+        val minutes = time.minute
         val fiveMinuteBlocks = minutes / 5
         return List(11) { index ->
             if (index < fiveMinuteBlocks) {
@@ -25,19 +27,19 @@ internal class BerlinClock {
         }
     }
 
-    internal fun getSingleHourRow(time: String): List<Boolean> {
-        val hours = time.split(":")[0].toInt()
+    internal fun getSingleHourRow(time: LocalTime): List<Boolean> {
+        val hours = time.hour
         val singleHours = hours % 5
         return List(4) { index -> index < singleHours }
     }
 
-    internal fun getFiveHourRow(time: String): List<Boolean> {
-        val hours = time.split(":")[0].toInt()
+    internal fun getFiveHourRow(time: LocalTime): List<Boolean> {
+        val hours = time.hour
         val fiveHourBlocks = hours / 5
         return List(4) { index -> index < fiveHourBlocks }
     }
 
-    internal fun getBerlinClockState(time: String): BerlinClockState {
+    internal fun getBerlinClockState(time: LocalTime): BerlinClockState {
         return BerlinClockState(
             secondsLamp = getSecondsLamp(time),
             fiveHourRow = getFiveHourRow(time),
