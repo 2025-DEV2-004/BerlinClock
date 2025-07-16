@@ -2,6 +2,8 @@ package com.exercise.berlinclock
 
 import com.exercise.berlinclock.model.BerlinClock
 import com.exercise.berlinclock.model.BerlinClockState
+import com.exercise.berlinclock.model.FiveMinuteRowState
+import com.exercise.berlinclock.model.FourRowState
 import com.exercise.berlinclock.model.LampState
 import kotlinx.datetime.LocalTime
 import org.junit.Assert
@@ -35,72 +37,74 @@ class BerlinClockTest {
     @Test
     fun `singleMinuteRow should be OFF OFF OFF OFF for 0 minutes`() {
         val time = LocalTime(hour = 0, minute = 0, second = 0)
-        val expected = listOf(false, false, false, false)
+        val expected = FourRowState(listOf(false, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `singleMinuteRow should be ON OFF OFF OFF for 1 minute`() {
         val time = LocalTime(hour = 0, minute = 1, second = 0)
-        val expected = listOf(true, false, false, false)
+        val expected = FourRowState(listOf(true, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `singleMinuteRow should be ON ON OFF OFF for 2 minutes`() {
         val time = LocalTime(hour = 0, minute = 2, second = 0)
-        val expected = listOf(true, true, false, false)
+        val expected = FourRowState(listOf(true, true, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `singleMinuteRow should be ON ON ON OFF for 3 minutes`() {
         val time = LocalTime(hour = 0, minute = 3, second = 0)
-        val expected = listOf(true, true, true, false)
+        val expected = FourRowState(listOf(true, true, true, false))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `singleMinuteRow should be ON ON ON ON for 4 minutes`() {
         val time = LocalTime(hour = 0, minute = 4, second = 0)
-        val expected = listOf(true, true, true, true)
+        val expected = FourRowState(listOf(true, true, true, true))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `singleMinuteRow should be OFF OFF OFF OFF for 5 minutes`() { // Rollover
         val time = LocalTime(hour = 0, minute = 5, second = 0)
-        val expected = listOf(false, false, false, false)
+        val expected = FourRowState(listOf(false, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `singleMinuteRow should be ON OFF OFF OFF for 56 minutes`() {
         val time = LocalTime(hour = 0, minute = 56, second = 0) // 56 % 5 = 1
-        val expected = listOf(true, false, false, false)
+        val expected = FourRowState(listOf(true, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleMinuteRow(time))
     }
 
     @Test
     fun `fiveMinuteRow should be all OFF for 0 minutes`() {
         val time = LocalTime(hour = 0, minute = 0, second = 0)
-        val expected = List(11) { LampState.OFF }
+        val expected = FiveMinuteRowState(List(11) { LampState.OFF })
         Assert.assertEquals(expected, berlinClock.getFiveMinuteRow(time))
     }
 
     @Test
     fun `fiveMinuteRow should be all OFF for 4 minutes`() { // less than 5
         val time = LocalTime(hour = 0, minute = 4, second = 0)
-        val expected = List(11) { LampState.OFF }
+        val expected = FiveMinuteRowState(List(11) { LampState.OFF })
         Assert.assertEquals(expected, berlinClock.getFiveMinuteRow(time))
     }
 
     @Test
     fun `fiveMinuteRow for 5 minutes`() {
         val time = LocalTime(hour = 0, minute = 5, second = 0)
-        val expected = listOf(
+        val expected = FiveMinuteRowState(
+            listOf(
             LampState.YELLOW, LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF,
             LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF
+            )
         )
         Assert.assertEquals(expected, berlinClock.getFiveMinuteRow(time))
     }
@@ -108,9 +112,20 @@ class BerlinClockTest {
     @Test
     fun `fiveMinuteRow for 15 minutes`() {
         val time = LocalTime(hour = 0, minute = 15, second = 0)
-        val expected = listOf(
-            LampState.YELLOW, LampState.YELLOW, LampState.RED, LampState.OFF, LampState.OFF,
-            LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF, LampState.OFF
+        val expected = FiveMinuteRowState(
+            listOf(
+                LampState.YELLOW,
+                LampState.YELLOW,
+                LampState.RED,
+                LampState.OFF,
+                LampState.OFF,
+                LampState.OFF,
+                LampState.OFF,
+                LampState.OFF,
+                LampState.OFF,
+                LampState.OFF,
+                LampState.OFF
+            )
         )
         Assert.assertEquals(expected, berlinClock.getFiveMinuteRow(time))
     }
@@ -118,11 +133,13 @@ class BerlinClockTest {
     @Test
     fun `fiveMinuteRow for 37 minutes`() {
         val time = LocalTime(hour = 0, minute = 37, second = 0) // 37 / 5 = 7 lamps
-        val expected = listOf(
-            LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 15
-            LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 30
-            LampState.YELLOW, LampState.OFF, LampState.OFF,    // 35
-            LampState.OFF, LampState.OFF
+        val expected = FiveMinuteRowState(
+            listOf(
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 15
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 30
+                LampState.YELLOW, LampState.OFF, LampState.OFF,    // 35
+                LampState.OFF, LampState.OFF
+            )
         )
         Assert.assertEquals(expected, berlinClock.getFiveMinuteRow(time))
     }
@@ -131,11 +148,13 @@ class BerlinClockTest {
     @Test
     fun `fiveMinuteRow for 59 minutes`() {
         val time = LocalTime(hour = 0, minute = 59, second = 0) // 59 / 5 = 11 lamps
-        val expected = listOf(
-            LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 15
-            LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 30
-            LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 45
-            LampState.YELLOW, LampState.YELLOW                     // 55
+        val expected = FiveMinuteRowState(
+            listOf(
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 15
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 30
+                LampState.YELLOW, LampState.YELLOW, LampState.RED,    // 45
+                LampState.YELLOW, LampState.YELLOW                     // 55
+            )
         )
         Assert.assertEquals(expected, berlinClock.getFiveMinuteRow(time))
     }
@@ -144,112 +163,119 @@ class BerlinClockTest {
     @Test
     fun `singleHourRow should be all OFF for 0 hours`() {
         val time = LocalTime(hour = 0, minute = 0, second = 0)
-        val expected = listOf(false, false, false, false)
+        val expected = FourRowState(listOf(false, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be R000 for 1 hour`() { // R being true
         val time = LocalTime(hour = 1, minute = 0, second = 0)
-        val expected = listOf(true, false, false, false)
+        val expected = FourRowState(listOf(true, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be RRR0 for 3 hours`() {
         val time = LocalTime(hour = 3, minute = 0, second = 0)
-        val expected = listOf(true, true, true, false)
+        val expected = FourRowState(listOf(true, true, true, false))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be RRRR for 4 hours`() {
         val time = LocalTime(hour = 4, minute = 0, second = 0)
-        val expected = listOf(true, true, true, true)
+        val expected = FourRowState(listOf(true, true, true, true))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be all OFF for 5 hours (rollover)`() {
         val time = LocalTime(hour = 5, minute = 0, second = 0)
-        val expected = listOf(false, false, false, false)
+        val expected = FourRowState(listOf(false, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be R000 for 6 hours`() { // 6 % 5 = 1
         val time = LocalTime(hour = 6, minute = 0, second = 0)
-        val expected = listOf(true, false, false, false)
+        val expected = FourRowState(listOf(true, false, false, false))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be RRRR for 19 hours`() { // 19 % 5 = 4
         val time = LocalTime(hour = 19, minute = 0, second = 0)
-        val expected = listOf(true, true, true, true)
+        val expected = FourRowState(listOf(true, true, true, true))
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `singleHourRow should be RRR0 for 23 hours`() { // 23 % 5 = 3 (careful, it's 23 mod 5, not 23 / 5)
         val time = LocalTime(hour = 23, minute = 59, second = 59) // 23 % 5 = 3
-        val expected = listOf(true, true, true, false) // This should be 3 lamps on for 23 % 5 = 3
+        val expected = FourRowState(
+            listOf(
+                true,
+                true,
+                true,
+                false
+            )
+        ) // This should be 3 lamps on for 23 % 5 = 3
         Assert.assertEquals(expected, berlinClock.getSingleHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be all OFF for 0 hours`() {
         val time = LocalTime(hour = 0, minute = 0, second = 0)
-        val expected = listOf(false, false, false, false)
+        val expected = FourRowState(listOf(false, false, false, false))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be all OFF for 4 hours`() { // Less than 5
         val time = LocalTime(hour = 4, minute = 0, second = 0)
-        val expected = listOf(false, false, false, false)
+        val expected = FourRowState(listOf(false, false, false, false))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be R000 for 5 hours`() {
         val time = LocalTime(hour = 5, minute = 0, second = 0)
-        val expected = listOf(true, false, false, false)
+        val expected = FourRowState(listOf(true, false, false, false))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be R000 for 9 hours`() { // 9 / 5 = 1
         val time = LocalTime(hour = 9, minute = 0, second = 0)
-        val expected = listOf(true, false, false, false)
+        val expected = FourRowState(listOf(true, false, false, false))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be RR00 for 10 hours`() {
         val time = LocalTime(hour = 10, minute = 0, second = 0)
-        val expected = listOf(true, true, false, false)
+        val expected = FourRowState(listOf(true, true, false, false))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be RRR0 for 17 hours`() { // 17 / 5 = 3
         val time = LocalTime(hour = 17, minute = 0, second = 0)
-        val expected = listOf(true, true, true, false)
+        val expected = FourRowState(listOf(true, true, true, false))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be RRRR for 20 hours`() {
         val time = LocalTime(hour = 20, minute = 0, second = 0)
-        val expected = listOf(true, true, true, true)
+        val expected = FourRowState(listOf(true, true, true, true))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
     @Test
     fun `fiveHourRow should be RRRR for 23 hours`() { // 23 / 5 = 4
         val time = LocalTime(hour = 23, minute = 59, second = 59)
-        val expected = listOf(true, true, true, true)
+        val expected = FourRowState(listOf(true, true, true, true))
         Assert.assertEquals(expected, berlinClock.getFiveHourRow(time))
     }
 
@@ -266,15 +292,17 @@ class BerlinClockTest {
 
         val expectedState = BerlinClockState(
             secondsLamp = true,
-            fiveHourRow = listOf(true, true, true, false),
-            singleHourRow = listOf(true, false, false, false),
-            fiveMinuteRow = listOf(
-                LampState.YELLOW, LampState.YELLOW, LampState.RED,
-                LampState.YELLOW, LampState.YELLOW, LampState.RED,
-                LampState.YELLOW, LampState.OFF, LampState.OFF,
-                LampState.OFF, LampState.OFF
+            fiveHourRow = FourRowState(listOf(true, true, true, false)),
+            singleHourRow = FourRowState(listOf(true, false, false, false)),
+            fiveMinuteRow = FiveMinuteRowState(
+                listOf(
+                    LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                    LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                    LampState.YELLOW, LampState.OFF, LampState.OFF,
+                    LampState.OFF, LampState.OFF
+                )
             ),
-            singleMinuteRow = listOf(true, true, false, false)
+            singleMinuteRow = FourRowState(listOf(true, true, false, false))
         )
 
         Assert.assertEquals(expectedState, berlinClock.getBerlinClockState(time))
@@ -285,10 +313,10 @@ class BerlinClockTest {
         val time = LocalTime(hour = 0, minute = 0, second = 0)
         val expectedState = BerlinClockState(
             secondsLamp = true, // Even second
-            fiveHourRow = List(4) { false },
-            singleHourRow = List(4) { false },
-            fiveMinuteRow = List(11) { LampState.OFF },
-            singleMinuteRow = List(4) { false }
+            fiveHourRow = FourRowState(List(4) { false }),
+            singleHourRow = FourRowState(List(4) { false }),
+            fiveMinuteRow = FiveMinuteRowState(List(11) { LampState.OFF }),
+            singleMinuteRow = FourRowState(List(4) { false })
         )
         Assert.assertEquals(expectedState, berlinClock.getBerlinClockState(time))
     }
@@ -298,15 +326,17 @@ class BerlinClockTest {
         val time = LocalTime(hour = 23, minute = 59, second = 59)
         val expectedState = BerlinClockState(
             secondsLamp = false, // Odd second
-            fiveHourRow = listOf(true, true, true, true), // 23/5 = 4
-            singleHourRow = listOf(true, true, true, false), // 23%5 = 3
-            fiveMinuteRow = listOf( // 59/5 = 11
-                LampState.YELLOW, LampState.YELLOW, LampState.RED,
-                LampState.YELLOW, LampState.YELLOW, LampState.RED,
-                LampState.YELLOW, LampState.YELLOW, LampState.RED,
-                LampState.YELLOW, LampState.YELLOW
+            fiveHourRow = FourRowState(listOf(true, true, true, true)), // 23/5 = 4
+            singleHourRow = FourRowState(listOf(true, true, true, false)), // 23%5 = 3
+            fiveMinuteRow = FiveMinuteRowState(
+                listOf( // 59/5 = 11
+                    LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                    LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                    LampState.YELLOW, LampState.YELLOW, LampState.RED,
+                    LampState.YELLOW, LampState.YELLOW
+                )
             ),
-            singleMinuteRow = listOf(true, true, true, true) // 59%5 = 4
+            singleMinuteRow = FourRowState(listOf(true, true, true, true))// 59%5 = 4
         )
         Assert.assertEquals(expectedState, berlinClock.getBerlinClockState(time))
     }
