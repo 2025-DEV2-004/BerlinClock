@@ -20,8 +20,6 @@ import com.exercise.berlinclock.ui.theme.BerlinClockTheme
 @Preview
 @Composable
 private fun PreviewBerlinClockScreen() {
-    // This is where the Berlin Clock UI will be implemented
-    // For now, we can leave it empty or add a placeholder
     BerlinClockTheme {
         BerlinClockScreen(BerlinClock())
     }
